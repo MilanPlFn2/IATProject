@@ -9,14 +9,14 @@ class QAgent(AgentInterface):
     pour mettre à jour sa politique d'action.
     """
 
-    def __init__(self, maze: Maze, eps_profile: EpsilonProfile, gamma: float, alpha: float):
+    def __init__(self, game: game, eps_profile: EpsilonProfile, gamma: float, alpha: float):
         """A LIRE
         Ce constructeur initialise une nouvelle instance de la classe QAgent.
         Il doit stocker les différents paramètres nécessaires au fonctionnement de l'algorithme et initialiser la 
         fonction de valeur d'action, notée Q.
 
-        :param maze: Le labyrinthe à résoudre 
-        :type maze: Maze
+        :param game: Le labyrinthe à résoudre 
+        :type game: game
 
         :param eps_profile: Le profil du paramètre d'exploration epsilon 
         :type eps_profile: EpsilonProfile
@@ -28,18 +28,18 @@ class QAgent(AgentInterface):
         :type alpha: float
 
         - Visualisation des données
-        :attribut mazeValues: la fonction de valeur stockée qui sera écrite dans un fichier de log après la résolution complète
-        :type mazeValues: data frame pandas
+        :attribut gameValues: la fonction de valeur stockée qui sera écrite dans un fichier de log après la résolution complète
+        :type gameValues: data frame pandas
         :penser à bien stocker aussi la taille du labyrinthe (nx,ny)
 
         :attribut qvalues: la Q-valeur stockée qui sera écrite dans un fichier de log après la résolution complète
-        :type mazeValues: data frame pandas
+        :type gameValues: data frame pandas
         """
         # Initialise la fonction de valeur Q
-        self.Q = np.zeros([maze.ny, maze.nx, maze.na])
+        self.Q = np.zeros([game.ny, game.nx, game.na])
 
-        self.maze = maze
-        self.na = maze.na
+        self.game = game
+        self.na = game.na
 
         # Paramètres de l'algorithme
         self.gamma = gamma
@@ -50,7 +50,7 @@ class QAgent(AgentInterface):
 
         # Visualisation des données (vous n'avez pas besoin de comprendre cette partie)
         self.qvalues = pd.DataFrame(data={'episode': [], 'value': []})
-        self.values = pd.DataFrame(data={'nx': [maze.nx], 'ny': [maze.ny]})
+        self.values = pd.DataFrame(data={'nx': [game.nx], 'ny': [game.ny]})
 
     def learn(self, env, n_episodes, max_steps):
         """Cette méthode exécute l'algorithme de q-learning. 
@@ -72,7 +72,7 @@ class QAgent(AgentInterface):
         # Execute N episodes 
         for episode in range(n_episodes):
             # Reinitialise l'environnement
-            state = env.reset_using_existing_maze()
+            state = env.reset_using_existing_game()
             # Execute K steps 
             for step in range(max_steps):
                 # Selectionne une action 
@@ -92,7 +92,7 @@ class QAgent(AgentInterface):
 
             # Sauvegarde et affiche les données d'apprentissage
             if n_episodes >= 0:
-                state = env.reset_using_existing_maze()
+                state = env.reset_using_existing_game()
                 print("\r#> Ep. {}/{} Value {}".format(episode, n_episodes, self.Q[state][self.select_greedy_action(state)]), end =" ")
                 self.save_log(env, episode)
 
@@ -141,13 +141,13 @@ class QAgent(AgentInterface):
         """Sauvegarde les données d'apprentissage.
         :warning: Vous n'avez pas besoin de comprendre cette méthode
         """
-        state = env.reset_using_existing_maze()
+        state = env.reset_using_existing_game()
         # Construit la fonction de valeur d'état associée à Q
-        V = np.zeros((int(self.maze.ny), int(self.maze.nx)))
-        for state in self.maze.getStates():
+        V = np.zeros((int(self.game.ny), int(self.game.nx)))
+        for state in self.game.getStates():
             val = self.Q[state][self.select_action(state)]
             V[state] = val
 
-        state = env.reset_using_existing_maze()
+        state = env.reset_using_existing_game()
         self.qvalues = self.qvalues.append({'episode': episode, 'value': self.Q[state][self.select_greedy_action(state)]}, ignore_index=True)
-        self.values = self.values.append({'episode': episode, 'value': np.reshape(V,(1, self.maze.ny*self.maze.nx))[0]},ignore_index=True)
+        self.values = self.values.append({'episode': episode, 'value': np.reshape(V,(1, self.game.ny*self.game.nx))[0]},ignore_index=True)
