@@ -42,8 +42,7 @@ class QAgent(AgentInterface):
             new_list.append([s, [0, 0, 0, 0]])
 
         self.Q = new_list
-        #print(self.Q)
-
+        print(self.Q)
 
         self.game = game
         self.na = game.na
@@ -118,6 +117,7 @@ class QAgent(AgentInterface):
         """
         #self.Q[state][action] = self.Q[state][action] + self.alpha * (reward + self.gamma * np.max(self.Q[next_state]))
         self.Q[state][action] = (1. - self.alpha) * self.Q[state][action] + self.alpha * (reward + self.gamma * np.max(self.Q[next_state]))
+        
 
     def select_action(self, state : 'Tuple[int, int]'):
         """À COMPLÉTER!
