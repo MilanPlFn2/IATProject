@@ -42,7 +42,7 @@ class QAgent(AgentInterface):
             new_list.append([s, [0, 0, 0, 0]])
 
         self.Q = new_list
-        print(self.Q)
+        #print(self.Q)
 
 
         self.game = game

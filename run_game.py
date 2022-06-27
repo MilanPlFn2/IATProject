@@ -8,8 +8,8 @@ from controller.qlearning import QAgent
 def main():
 
     game = SpaceInvaders(display=True)
-    gamma = 1.
-    alpha = 0.2
+    gamma = 0.5
+    alpha = 0.8
     eps_profile = EpsilonProfile(1.0, 0.1) #probabilité d'exploiration
     #controller = KeyboardController()
     controller = QAgent(game,eps_profile,gamma,alpha)
