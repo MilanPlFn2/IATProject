@@ -28,7 +28,7 @@ class QAgent(AgentInterface):
         :param alpha: Le learning rate 
         :type alpha: float
 
-        - Visualisation des données
+        - Visualisation des données 
         :attribut gameValues: la fonction de valeur stockée qui sera écrite dans un fichier de log après la résolution complète
         :type gameValues: data frame pandas
         :penser à bien stocker aussi la taille du labyrinthe (nx,ny)
@@ -37,7 +37,13 @@ class QAgent(AgentInterface):
         :type gameValues: data frame pandas
         """
         # Initialise la fonction de valeur Q
-        self.Q = np.zeros([game.ny, game.nx, game.na])
+        new_list = []
+        for s in game.states:
+            new_list.append([s, [0, 0, 0, 0]])
+
+        self.Q = new_list
+        print(self.Q)
+
 
         self.game = game
         self.na = game.na
@@ -51,7 +57,7 @@ class QAgent(AgentInterface):
 
         # Visualisation des données (vous n'avez pas besoin de comprendre cette partie)
         self.qvalues = pd.DataFrame(data={'episode': [], 'value': []})
-        self.values = pd.DataFrame(data={'nx': [game.nx], 'ny': [game.ny]})
+        #self.values = pd.DataFrame(data={'nx': [game.nx], 'ny': [game.ny]})
 
     def learn(self, env, n_episodes, max_steps):
         """Cette méthode exécute l'algorithme de q-learning. 
