@@ -41,8 +41,19 @@ class SpaceInvaders():
 
         # caption and icon
         pygame.display.set_caption("Welcome to Space Invaders Game by:- styles")
+        
+        self.states = []
+        # pour la position x de l'agent
+        for i in range(0,800,50): 
+            # pour la position x de l'invader
+            for j in range(0,800,50): 
+                # pour la position y de l'invader
+                for k in range(0,600,50): 
+                    # etat missible touché ou non
+                    for b in (0,1):
+                        T = [i,j,k,b]
+                        self.states.append(T)
 
-        self.states = [(y,x) for y in range(self.ny) for x in range(self.nx)]
 
         # Score
         self.scoreX = 5

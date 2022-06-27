@@ -1,14 +1,18 @@
 from time import sleep
 from game.SpaceInvaders import SpaceInvaders
 from controller.keyboard import KeyboardController
+from controller.epsilon_profile import EpsilonProfile
 from controller.random_agent import RandomAgent
 from controller.qlearning import QAgent
 
 def main():
 
     game = SpaceInvaders(display=True)
+    gamma = 1.
+    alpha = 0.2
+    eps_profile = EpsilonProfile(1.0, 0.1) #probabilité d'exploiration
     #controller = KeyboardController()
-    controller = QAgent()
+    controller = QAgent(game,eps_profile,gamma,alpha)
     #controller = RandomAgent(game.na)
  
     state = game.reset()
