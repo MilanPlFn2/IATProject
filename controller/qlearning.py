@@ -1,6 +1,5 @@
 import numpy as np
 from agent import AgentInterface
-from world.maze import Maze
 from epsilon_profile import EpsilonProfile
 import pandas as pd
 
