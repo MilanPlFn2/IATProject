@@ -2,11 +2,13 @@ from time import sleep
 from game.SpaceInvaders import SpaceInvaders
 from controller.keyboard import KeyboardController
 from controller.random_agent import RandomAgent
+from controller.qlearning import QAgent
 
 def main():
 
     game = SpaceInvaders(display=True)
-    controller = KeyboardController()
+    #controller = KeyboardController()
+    controller = QAgent()
     #controller = RandomAgent(game.na)
  
     state = game.reset()

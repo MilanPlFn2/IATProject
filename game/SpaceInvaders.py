@@ -81,12 +81,12 @@ class SpaceInvaders():
     def full_image(self):
         return pygame.surfarray.array3d(self.screen)
 
-    def get_state(self):
+    def get_state(self) -> 'List[Tuple[int,int]]':
         """ A COMPLETER AVEC VOTRE ETAT
         Cette méthode doit renvoyer l'état du système comme vous aurez choisi de
         le représenter. Vous pouvez utiliser les accesseurs ci-dessus pour cela. 
         """
-        return "L'état n'est pas implémenté (SpaceInvaders.get_state)"
+        return self.states
 
     def reset(self):
         """Reset the game at the initial state.
