@@ -42,6 +42,8 @@ class SpaceInvaders():
         # caption and icon
         pygame.display.set_caption("Welcome to Space Invaders Game by:- styles")
 
+        self.states = [(y,x) for y in range(self.ny) for x in range(self.nx)]
+
         # Score
         self.scoreX = 5
         self.scoreY = 5
@@ -81,7 +83,7 @@ class SpaceInvaders():
     def full_image(self):
         return pygame.surfarray.array3d(self.screen)
 
-    def get_state(self) -> 'List[Tuple[int,int]]':
+    def get_state(self):
         """ A COMPLETER AVEC VOTRE ETAT
         Cette méthode doit renvoyer l'état du système comme vous aurez choisi de
         le représenter. Vous pouvez utiliser les accesseurs ci-dessus pour cela. 

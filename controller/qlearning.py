@@ -1,6 +1,7 @@
 import numpy as np
-from agent import AgentInterface
-from epsilon_profile import EpsilonProfile
+from controller import AgentInterface
+from game.SpaceInvaders import SpaceInvaders
+from controller.epsilon_profile import EpsilonProfile
 import pandas as pd
 
 class QAgent(AgentInterface):
@@ -9,7 +10,7 @@ class QAgent(AgentInterface):
     pour mettre à jour sa politique d'action.
     """
 
-    def __init__(self, game: game, eps_profile: EpsilonProfile, gamma: float, alpha: float):
+    def __init__(self, game: SpaceInvaders, eps_profile: EpsilonProfile, gamma: float, alpha: float):
         """A LIRE
         Ce constructeur initialise une nouvelle instance de la classe QAgent.
         Il doit stocker les différents paramètres nécessaires au fonctionnement de l'algorithme et initialiser la 
