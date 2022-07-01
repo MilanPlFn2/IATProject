@@ -10,7 +10,7 @@ from networks import MLP, CNN
 
 def main(args):
 
-    game = SpaceInvaders(display=True)
+    game = SpaceInvaders(display=False)
     gamma = 1 #coefficient de pondération des récompenses
     alpha = 1 #coefficient de mise à jour
     eps_profile = EpsilonProfile(1.0, 0.1) #probabilité d'exploiration
