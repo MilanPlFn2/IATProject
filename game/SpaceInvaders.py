@@ -3,6 +3,7 @@ import random
 import math
 from pygame import mixer
 import numpy as np
+from math import *
 import os
 
 
@@ -43,16 +44,22 @@ class SpaceInvaders():
         pygame.display.set_caption("Welcome to Space Invaders Game by:- styles")
         
         self.states = []
-        # pour la position x de l'agent
-        for i in range(0,800,50): 
-            # pour la position x de l'invader
-            for j in range(0,800,50): 
-                # pour la position y de l'invader
-                for k in range(0,600,50): 
-                    # etat missible touché ou non
-                    for b in (0,1):
-                        T = [i,j,k,b]
-                        self.states.append(T)
+        self.intervalle_echantillonnage = 50
+        self.nb_x = ceil(float(self.screen_width)/self.intervalle_echantillonnage)
+        self.nb_y = ceil(float(self.screen_height)/self.intervalle_echantillonnage)
+
+        # pour la position x de l'invader
+        for i in range(self.nb_x): 
+            # pour la position y de l'invader
+            for j in range(self.nb_y): 
+                # pour la position x du player
+                for k in range(self.nb_x):
+                    # pour la position du missile en y
+                    for by in range(self.nb_y):  
+                        # etat missible touché ou non
+                        for b in (0,1):
+                            T = [i,j,k,by,b]
+                            self.states.append(T)
 
 
         # Score
@@ -72,10 +79,10 @@ class SpaceInvaders():
     def get_player_Y(self) -> int:
         return self.player_Y
 
-    def get_indavers_X(self) -> 'List[int]':
+    def get_invaders_X(self) -> 'List[int]':
         return self.invader_X
 
-    def get_indavers_Y(self) -> 'List[int]':
+    def get_invaders_Y(self) -> 'List[int]':
         return self.invader_Y
 
     def get_bullet_X(self) -> int:
@@ -90,16 +97,26 @@ class SpaceInvaders():
         - fire = bullet is moving
         """
         return self.bullet_state
+        
 
     def full_image(self):
         return pygame.surfarray.array3d(self.screen)
 
-    def get_state(self):
+    def get_state(self) -> 'Tuple [int,int,int,int]':
         """ A COMPLETER AVEC VOTRE ETAT
         Cette méthode doit renvoyer l'état du système comme vous aurez choisi de
         le représenter. Vous pouvez utiliser les accesseurs ci-dessus pour cela. 
         """
-        return self.states
+        etatMissile = 1 if self.get_bullet_state() == "rest" else 0
+        if(self.get_invaders_Y()[0] >= self.screen_height) :
+            self.get_invaders_Y()[0] = self.screen_height-1
+        
+        if(self.get_bullet_Y() >= self.screen_height) :
+            etatCourant = (math.floor(self.get_invaders_X()[0]/self.intervalle_echantillonnage),math.floor(self.get_invaders_Y()[0]/self.intervalle_echantillonnage),math.floor(self.get_player_X()/self.intervalle_echantillonnage),math.floor(0/self.intervalle_echantillonnage),etatMissile)
+        else :
+            etatCourant = (math.floor(self.get_invaders_X()[0]/self.intervalle_echantillonnage),math.floor(self.get_invaders_Y()[0]/self.intervalle_echantillonnage),math.floor(self.get_player_X()/self.intervalle_echantillonnage),math.floor(self.get_bullet_Y()/self.intervalle_echantillonnage),etatMissile)
+
+        return etatCourant
 
     def reset(self):
         """Reset the game at the initial state.

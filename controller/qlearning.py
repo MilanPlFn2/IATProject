@@ -37,12 +37,8 @@ class QAgent(AgentInterface):
         :type gameValues: data frame pandas
         """
         # Initialise la fonction de valeur Q
-        new_list = []
-        for s in game.states:
-            new_list.append([s, [0, 0, 0, 0]])
-
-        self.Q = new_list
-        print(self.Q)
+        self.Q = np.zeros([game.nb_x, game.nb_y, game.nb_x, game.nb_y, 2, game.na])
+        #print(self.Q)
 
         self.game = game
         self.na = game.na
@@ -78,7 +74,7 @@ class QAgent(AgentInterface):
         # Execute N episodes 
         for episode in range(n_episodes):
             # Reinitialise l'environnement
-            state = env.reset_using_existing_game()
+            state = env.reset()
             # Execute K steps 
             for step in range(max_steps):
                 # Selectionne une action 
@@ -98,12 +94,12 @@ class QAgent(AgentInterface):
 
             # Sauvegarde et affiche les données d'apprentissage
             if n_episodes >= 0:
-                state = env.reset_using_existing_game()
+                state = env.reset()
                 print("\r#> Ep. {}/{} Value {}".format(episode, n_episodes, self.Q[state][self.select_greedy_action(state)]), end =" ")
-                self.save_log(env, episode)
+                #self.save_log(env, episode)
 
-        self.values.to_csv('partie_3/visualisation/logV.csv')
-        self.qvalues.to_csv('partie_3/visualisation/logQ.csv')
+        self.values.to_csv('visualisation/logV.csv')
+        self.qvalues.to_csv('visualisation/logQ.csv')
 
     def updateQ(self, state : 'Tuple[int, int]', action : int, reward : float, next_state : 'Tuple[int, int]'):
         """À COMPLÉTER!
@@ -148,13 +144,13 @@ class QAgent(AgentInterface):
         """Sauvegarde les données d'apprentissage.
         :warning: Vous n'avez pas besoin de comprendre cette méthode
         """
-        state = env.reset_using_existing_game()
+        state = env.reset()
         # Construit la fonction de valeur d'état associée à Q
         V = np.zeros((int(self.game.ny), int(self.game.nx)))
         for state in self.game.getStates():
             val = self.Q[state][self.select_action(state)]
             V[state] = val
 
-        state = env.reset_using_existing_game()
+        state = env.reset()
         self.qvalues = self.qvalues.append({'episode': episode, 'value': self.Q[state][self.select_greedy_action(state)]}, ignore_index=True)
         self.values = self.values.append({'episode': episode, 'value': np.reshape(V,(1, self.game.ny*self.game.nx))[0]},ignore_index=True)
