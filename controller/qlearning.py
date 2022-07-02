@@ -161,7 +161,7 @@ class QAgent(AgentInterface):
         pickle.dump(self.Q, f)
         f.close()
 
-    def load_qfucntion(self, filename: str = "qfunction.sav"):
+    def load_qfunction(self, filename: str = "qfunction.sav"):
         f = open(filename, "rb")
         self.Q = pickle.load(f)
         f.close()
