@@ -53,7 +53,7 @@ class QAgent(AgentInterface):
 
         # Visualisation des données (vous n'avez pas besoin de comprendre cette partie)
         self.qvalues = pd.DataFrame(data={'episode': [], 'value': []})
-        #self.values = pd.DataFrame(data={'nx': [game.nx], 'ny': [game.ny]})
+        self.values = pd.DataFrame(data={'nx': [game.nb_x], 'ny': [game.nb_y]})
 
     def learn(self, env, n_episodes, max_steps):
         """Cette méthode exécute l'algorithme de q-learning. 
@@ -99,7 +99,7 @@ class QAgent(AgentInterface):
                 print("\r#> Ep. {}/{} Value {}".format(episode, n_episodes, self.Q[state][self.select_greedy_action(state)]), end =" ")
                 #self.save_log(env, episode)
 
-        #self.values.to_csv('visualisation/logV.csv')
+        self.values.to_csv('visualisation/logV.csv')
         self.qvalues.to_csv('visualisation/logQ.csv')
 
     def updateQ(self, state : 'Tuple[int, int]', action : int, reward : float, next_state : 'Tuple[int, int]'):

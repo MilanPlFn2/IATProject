@@ -11,7 +11,7 @@ import time
 
 
 def run_game(game: SpaceInvaders, agent: QAgent, speed: float = 0., display: bool = False):
-    n_episodes = 1
+    n_episodes = 2
     step = 0
     sum_rewards = 0.
 
@@ -40,28 +40,24 @@ def run_game(game: SpaceInvaders, agent: QAgent, speed: float = 0., display: boo
 
 def main(args):
 
-    game = SpaceInvaders(display=False)
+    game = SpaceInvaders(display=True)
     gamma = 1 #coefficient de pondération des récompenses
     alpha = 1 #coefficient de mise à jour
     eps_profile = EpsilonProfile(1.0, 0.1) #probabilité d'exploiration
 
     """ INITIALISE LES PARAMETRES D'APPRENTISSAGE """
     # Hyperparamètres basiques
-    n_episodes = 50000
+    n_episodes = 500000
     max_steps = 1000
-    final_exploration_episode = 1000
 
-    #controller = KeyboardController()
     controller = QAgent(game,eps_profile,gamma,alpha)
-    #controller = DQNAgent(model,eps_profile,gamma,alpha)
-    #controller = RandomAgent(game.na)        
 
     if(args == "learn"):
         controller.learn(game, n_episodes, max_steps)
         controller.save_qfunction()
     elif(args == "test"):
         controller.load_qfunction()
-        run_game(game, controller, 0., True)
+        run_game(game, controller, 0, True)
 
 
 
