@@ -24,11 +24,14 @@ def main(args):
     #controller = KeyboardController()
     controller = QAgent(game,eps_profile,gamma,alpha)
     #controller = DQNAgent(model,eps_profile,gamma,alpha)
-    #controller = RandomAgent(game.na)
+    #controller = RandomAgent(game.na)        
 
     if(args == "learn"):
         controller.learn(game, n_episodes, max_steps)
         controller.save_qfunction()
+    elif(args == "test"):
+        controller.load_qfucntion()
+
 
 
     #state = game.reset()

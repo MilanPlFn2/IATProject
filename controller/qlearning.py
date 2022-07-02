@@ -3,6 +3,7 @@ from controller import AgentInterface
 from game.SpaceInvaders import SpaceInvaders
 from controller.epsilon_profile import EpsilonProfile
 import pandas as pd
+import pickle
 
 class QAgent(AgentInterface):
     """ 
@@ -98,7 +99,7 @@ class QAgent(AgentInterface):
                 print("\r#> Ep. {}/{} Value {}".format(episode, n_episodes, self.Q[state][self.select_greedy_action(state)]), end =" ")
                 #self.save_log(env, episode)
 
-        self.values.to_csv('visualisation/logV.csv')
+        #self.values.to_csv('visualisation/logV.csv')
         self.qvalues.to_csv('visualisation/logQ.csv')
 
     def updateQ(self, state : 'Tuple[int, int]', action : int, reward : float, next_state : 'Tuple[int, int]'):
@@ -154,3 +155,13 @@ class QAgent(AgentInterface):
         state = env.reset()
         self.qvalues = self.qvalues.append({'episode': episode, 'value': self.Q[state][self.select_greedy_action(state)]}, ignore_index=True)
         self.values = self.values.append({'episode': episode, 'value': np.reshape(V,(1, self.game.ny*self.game.nx))[0]},ignore_index=True)
+
+    def save_qfunction(self, filename: str = "qfunction.sav"):
+        f = open(filename, "wb")
+        pickle.dump(self.Q, f)
+        f.close()
+
+    def load_qfucntion(self, filename: str = "qfunction.sav"):
+        f = open(filename, "rb")
+        self.Q = pickle.load(f)
+        f.close()
