@@ -4,6 +4,7 @@ from game.SpaceInvaders import SpaceInvaders
 from controller.epsilon_profile import EpsilonProfile
 import pandas as pd
 import pickle
+from matplotlib import pyplot as plt
 
 class QAgent(AgentInterface):
     """ 
@@ -71,10 +72,13 @@ class QAgent(AgentInterface):
         dans un fichier de log
         """
         n_steps = np.zeros(n_episodes) + max_steps
+        q_array = np.zeros(n_episodes)
+        r_array = np.zeros(n_episodes)
         
         # Execute N episodes 
         for episode in range(n_episodes):
             # Reinitialise l'environnement
+            somme = 0
             state = env.reset()
             # Execute K steps 
             for step in range(max_steps):
@@ -84,6 +88,7 @@ class QAgent(AgentInterface):
                 next_state, reward, terminal = env.step(action)
                 # Mets à jour la fonction de valeur Q
                 self.updateQ(state, action, reward, next_state)
+                somme += reward
                 
                 if terminal:
                     n_steps[episode] = step + 1  
@@ -99,8 +104,28 @@ class QAgent(AgentInterface):
                 print("\r#> Ep. {}/{} Value {}".format(episode, n_episodes, self.Q[state][self.select_greedy_action(state)]), end =" ")
                 #self.save_log(env, episode)
 
-        #self.values.to_csv('visualisation/logV.csv')
-        self.qvalues.to_csv('visualisation/logQ.csv')
+            q_array[episode]=np.sum(self.Q)
+            r_array[episode]=somme
+
+        graph_name = "nbrEpisodes{}_maxSteps{}_gamma{}_tailleIntervalle{}".format(n_episodes, max_steps, self.gamma, self.game.intervalle_echantillonnage)
+
+        #Affichage des graphes pour la visualisation de l'apprentissage
+        figure1 = plt.figure("Sum of Q function values over episodes")
+        plt.plot(q_array)
+        figure1.suptitle('Somme des valeurs de la fonction Q en fonction de l\'épisode ', fontsize=12)
+        plt.xlabel('Numéro d\'épisode', fontsize=8)
+        plt.ylabel('Somme des valeurs de la fonction Q', fontsize=8)
+        plt.savefig('qfunc_'+graph_name+'.png')
+        
+        figure2 = plt.figure("Sum of rewards over episodes")
+        
+        plt.plot(r_array,'o')
+        #plt.scatter(r_array)
+        figure2.suptitle('Somme des récompenses en fonction de l\'épisode ', fontsize=12)
+        plt.xlabel('Numéro d\'épisode', fontsize=8)
+        plt.ylabel('Somme des récompenses', fontsize=8)
+        plt.savefig('reward_'+graph_name+'.png')
+        
 
     def updateQ(self, state : 'Tuple[int, int]', action : int, reward : float, next_state : 'Tuple[int, int]'):
         """À COMPLÉTER!
