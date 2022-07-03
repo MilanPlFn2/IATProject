@@ -9,9 +9,30 @@ from controller.dqn_agent import DQNAgent
 from networks import MLP, CNN
 import time
 
+def main(args):
 
-def run_game(game: SpaceInvaders, agent: QAgent, speed: float = 0., display: bool = False):
-    n_episodes = 2
+    game = SpaceInvaders(display=True)
+    gamma = 1 #coefficient de pondération des récompenses
+    alpha = 1 #coefficient de mise à jour
+    eps_profile = EpsilonProfile(1.0, 0.1) #probabilité d'exploiration
+
+    """ INITIALISE LES PARAMETRES D'APPRENTISSAGE """
+    # Hyperparamètres basiques
+    n_episodes = 100
+    max_steps = 1000
+
+    controller = QAgent(game,eps_profile,gamma,alpha)
+
+    if(args == "learn"):
+        controller.learn(game, n_episodes, max_steps)
+        controller.save_qfunction()
+    elif(args == "test"):
+        controller.load_qfunction()
+        test_agent(game, controller, 0, True)
+
+
+def test_agent(game: SpaceInvaders, agent: QAgent, speed: float = 0., display: bool = False):
+    n_episodes = 1
     step = 0
     sum_rewards = 0.
 
@@ -34,40 +55,8 @@ def run_game(game: SpaceInvaders, agent: QAgent, speed: float = 0., display: boo
                 game.game_over()
                 break
             state = next_state
+    print("perdu, " + str(sum_rewards) + " points")
     return n_steps, sum_rewards
-
-
-
-def main(args):
-
-    game = SpaceInvaders(display=True)
-    gamma = 1 #coefficient de pondération des récompenses
-    alpha = 1 #coefficient de mise à jour
-    eps_profile = EpsilonProfile(1.0, 0.1) #probabilité d'exploiration
-
-    """ INITIALISE LES PARAMETRES D'APPRENTISSAGE """
-    # Hyperparamètres basiques
-    n_episodes = 200
-    max_steps = 100
-    final_exploration_episode = 1000
-
-    controller = QAgent(game,eps_profile,gamma,alpha)
-
-    if(args == "learn"):
-        controller.learn(game, n_episodes, max_steps)
-        controller.save_qfunction()
-    elif(args == "test"):
-        controller.load_qfunction()
-        run_game(game, controller, 0, True)
-
-
-
-    #state = game.reset()
-    #while True:
-    #    action = controller.select_action(state)
-    #    state, reward, is_done = game.step(action)
-    #    sleep(0.0001)
-
 
 if __name__ == '__main__' :
     if(len(sys.argv) < 2 ): 
@@ -80,3 +69,4 @@ if __name__ == '__main__' :
         exit(0)
     else:
         main(sys.argv[1])
+

@@ -4,7 +4,7 @@ from game.SpaceInvaders import SpaceInvaders
 from controller.epsilon_profile import EpsilonProfile
 import pandas as pd
 import pickle
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
 
 class QAgent(AgentInterface):
     """ 
@@ -107,24 +107,9 @@ class QAgent(AgentInterface):
             q_array[episode]=np.sum(self.Q)
             r_array[episode]=somme
 
-        graph_name = "nbrEpisodes{}_maxSteps{}_gamma{}_tailleIntervalle{}".format(n_episodes, max_steps, self.gamma, self.game.intervalle_echantillonnage)
+        self.plot(n_episodes, max_steps, q_array, r_array)
 
-        #Affichage des graphes pour la visualisation de l'apprentissage
-        figure1 = plt.figure("Sum of Q function values over episodes")
-        plt.plot(q_array)
-        figure1.suptitle('Somme des valeurs de la fonction Q en fonction de l\'épisode ', fontsize=12)
-        plt.xlabel('Numéro d\'épisode', fontsize=8)
-        plt.ylabel('Somme des valeurs de la fonction Q', fontsize=8)
-        plt.savefig('qfunc_'+graph_name+'.png')
-        
-        figure2 = plt.figure("Sum of rewards over episodes")
-        
-        plt.plot(r_array,'o')
-        #plt.scatter(r_array)
-        figure2.suptitle('Somme des récompenses en fonction de l\'épisode ', fontsize=12)
-        plt.xlabel('Numéro d\'épisode', fontsize=8)
-        plt.ylabel('Somme des récompenses', fontsize=8)
-        plt.savefig('reward_'+graph_name+'.png')
+       
         
 
     def updateQ(self, state : 'Tuple[int, int]', action : int, reward : float, next_state : 'Tuple[int, int]'):
@@ -137,7 +122,6 @@ class QAgent(AgentInterface):
         :param reward: La récompense perçue
         :param next_state: L'état suivant
         """
-        #self.Q[state][action] = self.Q[state][action] + self.alpha * (reward + self.gamma * np.max(self.Q[next_state]))
         self.Q[state][action] = (1. - self.alpha) * self.Q[state][action] + self.alpha * (reward + self.gamma * np.max(self.Q[next_state]))
         
 
@@ -190,3 +174,24 @@ class QAgent(AgentInterface):
         f = open(filename, "rb")
         self.Q = pickle.load(f)
         f.close()
+    
+    def plot(self, n_episodes, max_steps, q_array, r_array):
+        filename = "ep" + str(n_episodes) + "-maxstep" + str(max_steps) + "-gamma" + str(self.gamma) + "-intervalle" + str(self.game.intervalle_echantillonnage)
+
+        plot1 = plt.figure("somme des q valeurs en fct de l'episode")
+        plt.plot(q_array)
+        plt.suptitle('somme des q valeurs en fct de l\'episode ')
+        plt.xlabel('episode')
+        plt.ylabel('somme de la fct Q')
+        plot1.savefig(filename+'.png')
+        plt.close()
+        
+        filename = "recompense" + str(n_episodes) + "-maxstep" + str(max_steps) + "-gamma" + str(self.gamma) + "-intervalle" + str(self.game.intervalle_echantillonnage)
+
+        plot2 = plt.figure("somme des recompenses selon les episodes")
+        plt.plot(r_array)
+        plt.suptitle('somme des recompenses selon les episodes')
+        plt.xlabel("episode")
+        plt.ylabel("somme des recompenses")
+        plot2.savefig(filename+'.png')
+        plt.close()
