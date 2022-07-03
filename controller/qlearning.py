@@ -54,7 +54,7 @@ class QAgent(AgentInterface):
 
         # Visualisation des données (vous n'avez pas besoin de comprendre cette partie)
         self.qvalues = pd.DataFrame(data={'episode': [], 'value': []})
-        #self.values = pd.DataFrame(data={'nx': [game.nx], 'ny': [game.ny]})
+        self.values = pd.DataFrame(data={'nx': [game.nb_x], 'ny': [game.nb_y]})
 
     def learn(self, env, n_episodes, max_steps):
         """Cette méthode exécute l'algorithme de q-learning. 
